@@ -39,10 +39,10 @@ bundled
 
 typings
 .typingsrc
-dts
-dist
-lib
-es
+#dts
+#dist
+#lib
+#es
 
 type_definitions/inversify/*.js
 
