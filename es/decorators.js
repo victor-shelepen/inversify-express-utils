@@ -170,21 +170,20 @@ export function params(type, parameterName) {
         Reflect.defineMetadata(METADATA_KEY.controllerParameter, metadataList, target.constructor);
     };
 }
-export function isAuthenticated(pass) {
-    if (pass === void 0) { pass = true; }
+export function httpContextAccessDecoratorFactory(implementation) {
     return function (target, key, descriptor) {
         var fn = descriptor.value;
         descriptor.value = function (_request, _response, _next) {
             return __awaiter(this, void 0, void 0, function () {
-                var context, _isAuthenticated;
+                var context, hasAccess;
                 return __generator(this, function (_a) {
                     switch (_a.label) {
                         case 0:
                             context = Reflect.getMetadata(METADATA_KEY.httpContext, _request);
-                            return [4 /*yield*/, context.user.isAuthenticated()];
+                            return [4 /*yield*/, implementation(context)];
                         case 1:
-                            _isAuthenticated = (_a.sent());
-                            if (_isAuthenticated && pass) {
+                            hasAccess = _a.sent();
+                            if (hasAccess) {
                                 return [2 /*return*/, fn.call(this, _request, _response)];
                             }
                             else {
@@ -200,4 +199,40 @@ export function isAuthenticated(pass) {
         };
         return descriptor;
     };
+}
+export function isAuthenticated(pass) {
+    var _this = this;
+    if (pass === void 0) { pass = true; }
+    return httpContextAccessDecoratorFactory(function (context) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, context.user.isAuthenticated()];
+                case 1: return [2 /*return*/, ((_a.sent()) && pass)];
+            }
+        });
+    }); });
+}
+export function inRole(role, pass) {
+    var _this = this;
+    if (pass === void 0) { pass = true; }
+    return httpContextAccessDecoratorFactory(function (context) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, context.user.isInRole(role)];
+                case 1: return [2 /*return*/, ((_a.sent()) && pass)];
+            }
+        });
+    }); });
+}
+export function isResourceOwner(resorceId, pass) {
+    var _this = this;
+    if (pass === void 0) { pass = true; }
+    return httpContextAccessDecoratorFactory(function (context) { return __awaiter(_this, void 0, void 0, function () {
+        return __generator(this, function (_a) {
+            switch (_a.label) {
+                case 0: return [4 /*yield*/, context.user.isResourceOwner(resorceId)];
+                case 1: return [2 /*return*/, ((_a.sent()) && pass)];
+            }
+        });
+    }); });
 }

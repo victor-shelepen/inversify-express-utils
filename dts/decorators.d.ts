@@ -1,5 +1,6 @@
 import { interfaces } from "./interfaces";
 import { PARAMETER_TYPE } from "./constants";
+import HttpContext = interfaces.HttpContext;
 export declare const injectHttpContext: (target: any, targetKey: string, index?: number | undefined) => void;
 export declare function controller(path: string, ...middleware: interfaces.Middleware[]): (target: any) => void;
 export declare function all(path: string, ...middleware: interfaces.Middleware[]): interfaces.HandlerDecorator;
@@ -20,4 +21,10 @@ export declare const cookies: (cookieName?: string) => ParameterDecorator;
 export declare const next: () => ParameterDecorator;
 export declare const principal: () => ParameterDecorator;
 export declare function params(type: PARAMETER_TYPE, parameterName?: string): (target: Object, methodName: string, index: number) => void;
+export interface IContextAcessAdapterFn {
+    (context: HttpContext): Promise<boolean>;
+}
+export declare function httpContextAccessDecoratorFactory(implementation: IContextAcessAdapterFn): (target: any, key: string | symbol, descriptor: TypedPropertyDescriptor<Function>) => TypedPropertyDescriptor<Function>;
 export declare function isAuthenticated(pass?: boolean): any;
+export declare function inRole(role: string, pass?: boolean): any;
+export declare function isResourceOwner(resorceId: string, pass?: boolean): any;
